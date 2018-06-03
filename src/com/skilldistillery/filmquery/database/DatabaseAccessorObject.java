@@ -24,15 +24,17 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 		stmt.setString(1, "%" + searchTerm + "%");
 		ResultSet searchResult = stmt.executeQuery();
 		while(searchResult.next()) {
-			
+			Actor actor = new Actor();
 			int id = searchResult.getInt(1);
 			String title = searchResult.getString(2);
 			int releaseYear = searchResult.getInt(3);
 			String rating = searchResult.getString(4);
 			String description = searchResult.getString(5);
 			Language language = getLanguageOfFilm(id);
+			List<Actor> actors = getActorsByFilmId(id);
+			StringBuilder actorList = actor.actorsListed(actors);
 			
-			Film film = new Film(title, releaseYear, description, rating, language);
+			Film film = new Film(title, releaseYear, description, rating, language, actors);
 			
 			films.add(film);
 		}
@@ -53,12 +55,17 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 		ResultSet filmResult = stmt.executeQuery();
 		if (filmResult.next()) {
 			// Here is our mapping of query columns to our object fields:
-			film = new Film(); // Create the object
+//			Actor actor = new Actor();
+			int id = filmResult.getInt(1);
+			String title = filmResult.getString(2);
+			int releaseYear = filmResult.getInt(3);
+			String rating = filmResult.getString(4);
+			String description = filmResult.getString(5);
+			Language language = getLanguageOfFilm(id);
+			List<Actor> actors = getActorsByFilmId(id);
+//			StringBuilder actorList = actor.actorsListed(actors);
 			
-			film.setTitle(filmResult.getString(2));
-			film.setReleaseYear(filmResult.getInt(3));
-			film.setRating(filmResult.getString(4));
-			film.setDescription(filmResult.getString(5));
+			film = new Film(title, releaseYear, description, rating, language, actors); // Create the object
 		}
 		filmResult.close();
 	    stmt.close();
@@ -92,8 +99,8 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 		List<Actor> actors = new ArrayList<>();
 		  try {
 			  Connection conn = DriverManager.getConnection(URL, "student", "student");
-		    String sql = "SELECT id, first_name, last_name"
-		               +  " FROM actor JOIN film_actor ON actor.id = film_actor.actor_id "
+		    String sql = "SELECT a.id, a.first_name, a.last_name FROM film f JOIN film_actor"
+		    		+ " ON film_actor.film_id = f.id JOIN actor a ON film_actor.actor_id = a.id"
 		               + " WHERE film_id = ?";
 		    PreparedStatement stmt = conn.prepareStatement(sql);
 		    stmt.setInt(1, filmId);

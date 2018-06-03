@@ -1,9 +1,21 @@
 package com.skilldistillery.filmquery.entities;
 
+import java.util.List;
+
 public class Actor {
 	private int id;
 	private String firstName;
 	private String lastName;
+	
+	public Actor(int id, String firstName, String lastName) {
+		super();
+		this.id = id;
+		this.firstName = firstName;
+		this.lastName = lastName;
+	}
+	
+	public Actor() {
+	}
 	
 	public int getId() {
 		return id;
@@ -24,15 +36,6 @@ public class Actor {
 		this.lastName = lastName;
 	}
 	
-	public Actor() {
-		// TODO Auto-generated constructor stub
-	}
-	public Actor(int id, String firstName, String lastName) {
-		super();
-		this.id = id;
-		this.firstName = firstName;
-		this.lastName = lastName;
-	}
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -65,11 +68,23 @@ public class Actor {
 			return false;
 		return true;
 	}
+	
+	public StringBuilder actorsListed(List<Actor> actors) {
+		StringBuilder builder = new StringBuilder();
+		List<Actor> tempActors = actors;
+		for (Actor actor : tempActors) {
+			String firstName = actor.getFirstName();
+			String lastName = actor.getLastName();
+			builder.append("Actors:\n\t").append(firstName + " " + lastName + "\n\t");
+		}
+		return builder;
+	}
+	
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
-		builder.append("Actor [id=").append(id).append(", firstName=").append(firstName).append(", lastName=")
-				.append(lastName).append("]");
+		builder.append(firstName).append(" ")
+				.append(lastName + "\n");
 		return builder.toString();
 	}
 	

@@ -20,33 +20,17 @@ public class Film {
 	private String specialFeatures;
 	private List<Actor> actors;
 	private Language language;
-	
-	
+	private StringBuilder actorList;
 
-	public Film(String title, int releaseYear, String description, String rating, Language language) throws SQLException {
+	public Film(String title, int releaseYear, String description, String rating, Language language,
+			List<Actor> actors) throws SQLException {
 		super();
 		this.title = title;
 		this.description = description;
 		this.releaseYear = releaseYear;
 		this.rating = rating;
 		this.language = language;
-	}
-
-	public StringBuilder toStringWithLanguage(List<Film> films) throws SQLException {
-		StringBuilder builder = new StringBuilder();
-		for (Film film : films) {
-			int filmId = film.getId();
-			String title = film.getTitle();
-			int releaseYear = film.getReleaseYear();
-			String rating = film.getRating();
-			String description = film.getDescription();
-			Language language = film.language;
-			builder.append("Film title: ").append(title).append("\nRelease year: ").append(releaseYear)
-					.append("\nRating: ").append(rating).append("\nDescription: ").append(description)
-					.append("\nLanguage: " + language).append("\n\n");
-		}
-		return builder;
-		
+		this.actors = actors;
 	}
 
 	public Film(String title, int releaseYear, String description, String rating) {
@@ -250,7 +234,6 @@ public class Film {
 		return actors;
 	}
 
-
 	@Override
 	public String toString() {
 		StringBuilder builder = new StringBuilder();
@@ -259,13 +242,56 @@ public class Film {
 		return builder.toString();
 	}
 
-	public String byIdToString() { // title, year, rating, and description are displayed.
+	public String byIdToString(Film film) { // title, year, rating, and description are displayed.
 		StringBuilder builder = new StringBuilder();
+		Language language = film.language;
 		builder.append("Film title = ").append(title).append("\nRelease year: ").append(releaseYear)
-				.append("\nRating: ").append(rating).append("\nDescription: ").append(description);
+				.append("\nRating: ").append(rating).append("\nDescription: ").append(description)
+				.append("\nLanguage: " + language + "\n");
 		return builder.toString();
 	}
 
+	public StringBuilder toStringWithLanguageAndActors(List<Film> films) throws SQLException {
+		StringBuilder builder = new StringBuilder();
+		for (Film film : films) {
+			DatabaseAccessorObject actorsInFilm = new DatabaseAccessorObject();
+			Actor actor = new Actor();
+			StringBuilder actorList = new StringBuilder("");
+			
+			int filmId = film.getId();
+			String title = film.getTitle();
+			int releaseYear = film.getReleaseYear();
+			String rating = film.getRating();
+			String description = film.getDescription();
+			Language language = film.language;
+			List<Actor> actors = actorsInFilm.getActorsByFilmId(filmId);
+			actorList = actor.actorsListed(actors);
+
+			builder.append("Film title: ").append(title).append("\nRelease year: ").append(releaseYear)
+					.append("\nRating: ").append(rating).append("\nDescription: ").append(description)
+					.append("\nLanguage: " + language).append("\nActors: " + actors.toString()).append("\n\n");
+		}
+		return builder;
+
+	}
+
+	public StringBuilder getActorList() {
+		return actorList;
+	}
+
+	public void setActorList(StringBuilder actorList) {
+		this.actorList = actorList;
+	}
+	
+	public StringBuilder actorsListedInFilm(List<Actor> actors) {
+		StringBuilder builder = new StringBuilder();
+		for (Actor actor : actors) {
+			String firstName = actor.getFirstName();
+			String lastName = actor.getLastName();
+			builder.append("Actors:\n\t").append(firstName + " " + lastName + "\n\t");
+		}
+		return builder;
+	}
 
 	// public String arrayListPrinter(List<E> list) {
 	// // use this to make a more elegant printed list for the output of films and

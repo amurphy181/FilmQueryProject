@@ -50,7 +50,7 @@ public class FilmQueryApp {
 					System.out.println("No film with that ID!");
 				}
 				if (film != null) {
-					System.out.println(film.byIdToString());
+					System.out.println(film.byIdToString(film));
 				}
 				break;
 			case 2:
@@ -68,7 +68,13 @@ public class FilmQueryApp {
 					System.out.println(n);
 				}
 				if (!films.isEmpty()) {
-					System.out.println(tempFilm.toStringWithLanguage(films));
+					for (Film film2 : films) {
+						
+						System.out.print(tempFilm.byIdToString(film2));
+						System.out.println("Actors and Actresses:\n" + film2.getActors().toString());
+					}
+//					System.out.println(tempFilm.toStringWithLanguageAndActors(films));
+//					System.out.println(db.getActorsByFilmId(100).toString());
 				}
 			case 3:
 			default:
