@@ -8,6 +8,7 @@ import java.util.Scanner;
 import com.skilldistillery.filmquery.database.DatabaseAccessor;
 import com.skilldistillery.filmquery.database.DatabaseAccessorObject;
 import com.skilldistillery.filmquery.entities.Film;
+import com.skilldistillery.filmquery.entities.FilmInventory;
 
 public class FilmQueryApp {
 
@@ -62,8 +63,11 @@ public class FilmQueryApp {
 						break;
 					case 2:
 						Film filmCategory = db.getFilmCategories(filmId);
+						FilmInventory fi = new FilmInventory();
+						List<FilmInventory> inventory = db.getFilmInventory(filmId);
 						System.out.println(film.allMovieDetails());
 						System.out.println("Category: " + filmCategory.filmCategoriesReturned() + "\n"); 
+						System.out.println("Inventory:\n" + fi.filmInventoryPrinter(inventory));
 						break;
 					}
 					input.nextLine();

@@ -10,6 +10,7 @@ import java.util.List;
 
 import com.skilldistillery.filmquery.entities.Actor;
 import com.skilldistillery.filmquery.entities.Film;
+import com.skilldistillery.filmquery.entities.FilmInventory;
 import com.skilldistillery.filmquery.entities.Language;
 
 public class DatabaseAccessorObject implements DatabaseAccessor {
@@ -75,8 +76,6 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 			filmFull = new Film(id, title, description, releaseYear, languageId, 
 					rentalDuration, rentalRate, length, replacementCost, rating, specialFeatures, language, actors);
 					
-			
-			film = new Film(title, releaseYear, description, rating, language, actors); // Create the object
 		}
 		filmResult.close();
 	    stmt.close();
@@ -198,6 +197,34 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 	    stmt.close();
 	    conn.close();
 		return film;
+	}
+
+	@Override
+	public List<FilmInventory> getFilmInventory(int filmIdNum) throws SQLException {
+		List<FilmInventory> filmInventory = new ArrayList<>();
+		  try {
+			  Connection conn = DriverManager.getConnection(URL, "student", "student");
+		    String sql = "SELECT id, film_id, store_id, media_condition, last_update from inventory_item where film_id = ?";
+		    PreparedStatement stmt = conn.prepareStatement(sql);
+		    stmt.setInt(1, filmIdNum);
+		    ResultSet rs = stmt.executeQuery();
+		    while (rs.next()) {
+		      int id = rs.getInt(1);
+		      int filmId = rs.getInt(2);
+		      int storeId = rs.getInt(3);
+		      String mediaCondition = rs.getString(4);
+		      String lastUpdate = rs.getString(5);
+		      
+		      FilmInventory fi = new FilmInventory(id, filmId, storeId, mediaCondition, lastUpdate);
+		      filmInventory.add(fi);
+		    }
+		    rs.close();
+		    stmt.close();
+		    conn.close();
+		  } catch (SQLException e) {
+		    e.printStackTrace();
+		  }
+		  return filmInventory;
 	}
 
 	
