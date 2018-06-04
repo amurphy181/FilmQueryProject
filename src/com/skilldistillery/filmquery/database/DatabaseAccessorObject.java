@@ -48,8 +48,10 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 	//title, year, rating, and description are displayed when this is returned
 	public Film getFilmById(int filmId) throws SQLException {
 		Film film = null;
+		Film filmFull = null;
 		Connection conn = DriverManager.getConnection(URL, "student", "student");
-		String sql = "SELECT id, title, release_year, rating, description FROM film WHERE id = ?";
+		String sql = "SELECT id, title, release_year, rating, description, language_id, rental_duration,"
+				+ "rental_rate, length, replacement_cost, special_features FROM film WHERE id = ?";
 		PreparedStatement stmt = conn.prepareStatement(sql);
 		stmt.setInt(1, filmId);
 		ResultSet filmResult = stmt.executeQuery();
@@ -61,16 +63,25 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 			int releaseYear = filmResult.getInt(3);
 			String rating = filmResult.getString(4);
 			String description = filmResult.getString(5);
+			int languageId = filmResult.getInt(6);
+			int rentalDuration = filmResult.getInt(7);
+			double rentalRate = filmResult.getDouble(8);
+			int length = filmResult.getInt(9);
+			double replacementCost = filmResult.getDouble(10);
+			String specialFeatures= filmResult.getString(11);
 			Language language = getLanguageOfFilm(id);
 			List<Actor> actors = getActorsByFilmId(id);
 //			StringBuilder actorList = actor.actorsListed(actors);
+			filmFull = new Film(id, title, description, releaseYear, languageId, 
+					rentalDuration, rentalRate, length, replacementCost, rating, specialFeatures, language, actors);
+					
 			
 			film = new Film(title, releaseYear, description, rating, language, actors); // Create the object
 		}
 		filmResult.close();
 	    stmt.close();
 	    conn.close();
-	    return film;
+	    return filmFull;
 
 	}
 
@@ -138,6 +149,55 @@ public class DatabaseAccessorObject implements DatabaseAccessor {
 	    stmt.close();
 	    conn.close();
 		return language;
+	}
+
+	
+	@Override
+	public Film getAllFilmDetails(int filmId) throws SQLException {
+		Film film = null;
+		Connection conn = DriverManager.getConnection(URL, "student", "student");
+		String sql = "SELECT id, title, description, release_year, language_id, rental_duration, rental_rate, "
+				+ "length, replacement_cost, rating, special_features FROM film WHERE film_id = ?";
+		PreparedStatement stmt = conn.prepareStatement(sql);
+		stmt.setInt(1, filmId);
+		ResultSet filmDetails = stmt.executeQuery();
+		if (filmDetails.next()) {
+			int id = filmDetails.getInt(1);
+			String title = filmDetails.getString(2);
+			String description = filmDetails.getString(3);
+			int releaseYear = filmDetails.getInt(4);
+			int languageId = filmDetails.getInt(5);
+			int rentalDuration = filmDetails.getInt(6);
+			double rentalRate = filmDetails.getDouble(7);
+			int length = filmDetails.getInt(8);
+			double replacementCost = filmDetails.getDouble(9);
+			String rating = filmDetails.getString(10);
+			String specialFeatures = filmDetails.getString(11);
+			film = new Film(id, title, description, releaseYear, languageId, rentalDuration, 
+					rentalRate, length, replacementCost, rating, specialFeatures); // Create the object
+		}
+		filmDetails.close();
+	    stmt.close();
+	    conn.close();
+		return film;
+	}
+
+	@Override
+	public Film getFilmCategories(int filmId) throws SQLException {
+		Film film = null;
+		Connection conn = DriverManager.getConnection(URL, "student", "student");
+		String sql = " SELECT cat.name FROM film f JOIN film_category fc ON fc.film_id = f.id JOIN category cat ON fc.category_id = cat.id WHERE f.id = ?";
+		PreparedStatement stmt = conn.prepareStatement(sql);
+		stmt.setInt(1, filmId);
+		ResultSet filmCategories = stmt.executeQuery();
+		if(filmCategories.next()) {
+			String categories = filmCategories.getString(1);
+			film = new Film(categories);
+		}
+		filmCategories.close();
+	    stmt.close();
+	    conn.close();
+		return film;
 	}
 
 	

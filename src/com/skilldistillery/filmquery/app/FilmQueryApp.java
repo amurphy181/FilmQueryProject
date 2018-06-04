@@ -45,12 +45,28 @@ public class FilmQueryApp {
 				try {
 					if (film == null) {
 						System.out.println("No film here!");
+						input.nextLine();
 					}
 				} catch (NullPointerException n) {
 					System.out.println("No film with that ID!");
 				}
 				if (film != null) {
 					System.out.println(film.byIdToString(film));
+					System.out.println("Actors and Actresses:\n");
+					System.out.println(film.actorsListedInFilm(film.getActors()));
+					System.out.println("Would you like to:\n\t1: Return to Main Menu, or\n\t2. View All Film Details?");
+					int returnToMenuOrViewDetails = input.nextInt();
+					switch (returnToMenuOrViewDetails) {
+					default:
+					case 1:
+						break;
+					case 2:
+						Film filmCategory = db.getFilmCategories(filmId);
+						System.out.println(film.allMovieDetails());
+						System.out.println("Category: " + filmCategory.filmCategoriesReturned() + "\n"); 
+						break;
+					}
+					input.nextLine();
 				}
 				break;
 			case 2:
@@ -58,7 +74,6 @@ public class FilmQueryApp {
 				System.out.print("Please enter your search term:");
 				String searchTerm = input.nextLine();
 				List<Film> films = db.getFilmBySearchTerm(searchTerm);
-				Film tempFilm = new Film();
 				try {
 					if (films.isEmpty()) {
 						System.out.println("No films containing that term!");
@@ -69,20 +84,19 @@ public class FilmQueryApp {
 				}
 				if (!films.isEmpty()) {
 					for (Film film2 : films) {
-						
-						System.out.print(tempFilm.byIdToString(film2));
-						System.out.println("Actors and Actresses:\n" + film2.getActors().toString());
+
+						System.out.print(film2.byIdToString(film2));
+						System.out.println("Actors and Actresses:\n");
+						System.out.println(film2.actorsListedInFilm(film2.getActors()));
 					}
-//					System.out.println(tempFilm.toStringWithLanguageAndActors(films));
-//					System.out.println(db.getActorsByFilmId(100).toString());
 				}
 			case 3:
 			default:
 			}
-			choice = initialMenu();
+			choice = secondaryMenu();
 		} while (choice != 3);
 
-		System.out.println("choice made");
+		System.out.println("Good-bye!");
 	}
 
 	private int initialMenu() {
@@ -95,6 +109,17 @@ public class FilmQueryApp {
 		int choice = input.nextInt();
 		return choice;
 
+	}
+
+	private int secondaryMenu() {
+		Scanner input = new Scanner(System.in);
+		System.out.println("\nWelcome back! Please select from the following options:");
+		System.out.println("1. Look up a film by its ID");
+		System.out.println("2. Look up a film by a keyword");
+		System.out.println("3. Exit the application");
+
+		int choice = input.nextInt();
+		return choice;
 	}
 
 }

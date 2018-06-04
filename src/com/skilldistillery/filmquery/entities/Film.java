@@ -21,9 +21,21 @@ public class Film {
 	private List<Actor> actors;
 	private Language language;
 	private StringBuilder actorList;
+	private String categories;
 
-	public Film(String title, int releaseYear, String description, String rating, Language language,
-			List<Actor> actors) throws SQLException {
+	public Film(String categories) throws SQLException {
+		super();
+		this.setCategories(categories);
+	}
+	
+	public StringBuilder filmCategoriesReturned() {
+		StringBuilder filmCategory = new StringBuilder();
+		filmCategory.append(categories);
+		return filmCategory;
+	}
+
+	public Film(String title, int releaseYear, String description, String rating, Language language, List<Actor> actors)
+			throws SQLException {
 		super();
 		this.title = title;
 		this.description = description;
@@ -140,6 +152,24 @@ public class Film {
 	}
 
 	public Film(int id, String title, String description, int releaseYear, int languageId, int rentalDuration,
+			double rentalRate, int length, double replacementCost, String rating, String specialFeatures)
+			throws SQLException {
+		super();
+		this.id = id;
+		this.title = title;
+		this.description = description;
+		this.releaseYear = releaseYear;
+		this.languageId = languageId;
+		this.rentalDuration = rentalDuration;
+		this.rentalRate = rentalRate;
+		this.length = length;
+		this.replacementCost = replacementCost;
+		this.rating = rating;
+		this.specialFeatures = specialFeatures;
+
+	}
+
+	public Film(int id, String title, String description, int releaseYear, int languageId, int rentalDuration,
 			double rentalRate, int length, double replacementCost, String rating, String specialFeatures,
 			List<Actor> actors) throws SQLException {
 		super();
@@ -156,6 +186,24 @@ public class Film {
 		this.specialFeatures = specialFeatures;
 		this.actors = actors;
 
+	}
+
+	public Film(int id, String title, String description, int releaseYear, int languageId, int rentalDuration,
+			double rentalRate, int length, double replacementCost, String rating, String specialFeatures,
+			Language language, List<Actor> actors) {
+		super();
+		this.id = id;
+		this.title = title;
+		this.description = description;
+		this.releaseYear = releaseYear;
+		this.languageId = languageId;
+		this.rentalDuration = rentalDuration;
+		this.rentalRate = rentalRate;
+		this.length = length;
+		this.replacementCost = replacementCost;
+		this.rating = rating;
+		this.specialFeatures = specialFeatures;
+		this.actors = actors;
 	}
 
 	@Override
@@ -257,7 +305,7 @@ public class Film {
 			DatabaseAccessorObject actorsInFilm = new DatabaseAccessorObject();
 			Actor actor = new Actor();
 			StringBuilder actorList = new StringBuilder("");
-			
+
 			int filmId = film.getId();
 			String title = film.getTitle();
 			int releaseYear = film.getReleaseYear();
@@ -282,21 +330,37 @@ public class Film {
 	public void setActorList(StringBuilder actorList) {
 		this.actorList = actorList;
 	}
-	
+
 	public StringBuilder actorsListedInFilm(List<Actor> actors) {
 		StringBuilder builder = new StringBuilder();
 		for (Actor actor : actors) {
 			String firstName = actor.getFirstName();
 			String lastName = actor.getLastName();
-			builder.append("Actors:\n\t").append(firstName + " " + lastName + "\n\t");
+			builder.append("\t" + firstName + " " + lastName + "\n");
 		}
 		return builder;
 	}
 
-	// public String arrayListPrinter(List<E> list) {
-	// // use this to make a more elegant printed list for the output of films and
-	// such
-	// return null;
-	// }
+	public StringBuilder allMovieDetails() {
+		StringBuilder builder = new StringBuilder();
 
+		builder.append("Film ID: ").append(id).append("\nTitle: " + title).append("\nDescription: " + description)
+				.append("\nRelease Year: " + releaseYear).append("\nLanguage ID: " + languageId)
+				.append("\nRental Duration: " + rentalDuration).append("\nRental Rate: " + rentalRate)
+				.append("\nLength: " + length).append("\nReplacement Cost: " + replacementCost)
+				.append("\nRating: " + rating).append("\nSpecial Features: " + specialFeatures);
+		return builder;
+	}
+
+	public String getCategories() {
+		return categories;
+	}
+
+	public void setCategories(String categories) {
+		this.categories = categories;
+	}
+	
+	public String retrieveCategories() {
+		return null;
+	}
 }
