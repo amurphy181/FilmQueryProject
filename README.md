@@ -1,6 +1,5 @@
 ## Film Query Project
 
-note: fix the language output for film ID choice
 ### Overview
 With this project, we built on our earlier work with Java classes and SQL queries to integrate the two into a video-rental store database search program. The user interface for the program is very simple: upon running the Film Query App, the user is prompted for a choice to search for a film by the film's ID or by a generic search term.
 
