@@ -9,6 +9,7 @@ import com.skilldistillery.filmquery.database.DatabaseAccessor;
 import com.skilldistillery.filmquery.database.DatabaseAccessorObject;
 import com.skilldistillery.filmquery.entities.Film;
 import com.skilldistillery.filmquery.entities.FilmInventory;
+import com.skilldistillery.filmquery.entities.Language;
 
 public class FilmQueryApp {
 
@@ -52,7 +53,9 @@ public class FilmQueryApp {
 					System.out.println("No film with that ID!");
 				}
 				if (film != null) {
+					Language filmLanguage = db.getLanguageOfFilm(filmId);
 					System.out.println(film.byIdToString(film));
+					System.out.println(filmLanguage);
 					System.out.println("Actors and Actresses:\n");
 					System.out.println(film.actorsListedInFilm(film.getActors()));
 					System.out.println("Would you like to:\n\t1: Return to Main Menu, or\n\t2. View All Film Details?");
@@ -63,11 +66,20 @@ public class FilmQueryApp {
 						break;
 					case 2:
 						Film filmCategory = db.getFilmCategories(filmId);
-						FilmInventory fi = new FilmInventory();
 						List<FilmInventory> inventory = db.getFilmInventory(filmId);
 						System.out.println(film.allMovieDetails());
-						System.out.println("Category: " + filmCategory.filmCategoriesReturned() + "\n"); 
-						System.out.println("Inventory:\n" + fi.filmInventoryPrinter(inventory));
+						System.out.println("Category: " + filmCategory.filmCategoriesReturned() + "\n");
+						System.out.println("Would you like to view inventory details for this film? (Y/N)");
+						String inventoryChoice = input.nextLine();
+						switch (inventoryChoice) {
+						case "Y":
+							FilmInventory fi = new FilmInventory();
+							System.out.println("Inventory:\n" + fi.filmInventoryPrinter(inventory));
+							input.nextLine();
+							break;
+						default:
+							break;
+						}
 						break;
 					}
 					input.nextLine();
@@ -88,8 +100,11 @@ public class FilmQueryApp {
 				}
 				if (!films.isEmpty()) {
 					for (Film film2 : films) {
+						int filmIDforSearch = film2.getId();
+						Language filmLanguage = db.getLanguageOfFilm(filmIDforSearch);
 
 						System.out.print(film2.byIdToString(film2));
+						System.out.println(filmLanguage);
 						System.out.println("Actors and Actresses:\n");
 						System.out.println(film2.actorsListedInFilm(film2.getActors()));
 					}
